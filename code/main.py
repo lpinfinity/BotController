@@ -6,7 +6,7 @@ See documentation at https://nRF24.github.io/pyRF24
 
 import time
 import struct
-from pyrf24 import RF24, RF24_PA_LOW, RF24_DRIVER
+from pyrf24 import RF24, RF24_PA_LOW
 
 print(__file__)  # print example name
 
@@ -16,17 +16,12 @@ print(__file__)  # print example name
 # CE Pin uses GPIO number with BCM and SPIDEV drivers, other platforms use
 # their own pin numbering
 # CS Pin addresses the SPI bus number at /dev/spidev<a>.<b>
-# ie: RF24 radio(<ce_pin>, <a>*10+<b>); spidev1.0 is 10, spidev1.1 is 11 etc..
-CSN_PIN = 0  # aka CE0 on SPI bus 0: /dev/spidev0.0
-if RF24_DRIVER == "MRAA":
-    CE_PIN = 15  # for GPIO22
-elif RF24_DRIVER == "wiringPi":
-    CE_PIN = 3  # for GPIO22
-else:
-    CE_PIN = 22
+# ie: RF24 radio(<ce_pin>, <a>*10+<b>); spidev1.0 is 10, spidev1.1 is 11 etc...
+CSN_PIN = 8  # aka CE0 on SPI bus 0: /dev/spidev0.0
+CE_PIN = 25
 radio = RF24(CE_PIN, CSN_PIN)
 
-# using the python keyword global is bad practice. Instead we'll use a 1 item
+# using the python keyword global is bad practice. Instead, we'll use a 1 item
 # list to store our float number for the payloads sent
 payload = [0.0]
 
@@ -61,6 +56,7 @@ radio.open_rx_pipe(1, address[not radio_number])  # using pipe 1
 # we need. A float value occupies 4 bytes in memory using struct.calcsize()
 # "<f" means a little endian unsigned float
 radio.payload_size = struct.calcsize("<f")
+
 
 # for debugging
 # radio.print_details()
@@ -115,3 +111,4 @@ def slave(timeout: int = 6):
     radio.listen = False  # put the nRF24L01 is in TX mode
 
 
+master(69)
